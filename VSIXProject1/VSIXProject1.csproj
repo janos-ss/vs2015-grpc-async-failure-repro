@@ -208,6 +208,17 @@
   </Target>
   <Import Project="..\packages\Microsoft.VSSDK.BuildTools.14.3.25407\build\Microsoft.VSSDK.BuildTools.targets" Condition="Exists('..\packages\Microsoft.VSSDK.BuildTools.14.3.25407\build\Microsoft.VSSDK.BuildTools.targets')" />
   <Import Project="..\packages\Grpc.Core.1.0.1\build\net45\Grpc.Core.targets" Condition="Exists('..\packages\Grpc.Core.1.0.1\build\net45\Grpc.Core.targets')" />
+  <Target Name="IncludeDllsVsix" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <Grpc_Regex>grpc_csharp_ext.*\.dll</Grpc_Regex>
+    </PropertyGroup>
+    <ItemGroup>
+      <Content Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('%(Content.Identity)', '$(Grpc_Regex)'))">
+        <IncludeInVSIX>True</IncludeInVSIX>
+      </Content>
+    </ItemGroup>
+    <Message Text="Content: %(Content.Identity), IncludeInVSIX: %(Content.IncludeInVSIX)" Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('%(Content.Identity)', '$(Grpc_Regex)'))" />
+  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
